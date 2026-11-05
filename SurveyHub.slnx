@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SurveyHub.Api/SurveyHub.Api.csproj" />
+    <Project Path="src/SurveyHub.Application/SurveyHub.Application.csproj" />
+    <Project Path="src/SurveyHub.Domain/SurveyHub.Domain.csproj" />
+    <Project Path="src/SurveyHub.Infrastructure/SurveyHub.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SurveyHub.UnitTests/SurveyHub.UnitTests.csproj" />
+  </Folder>
+</Solution>
