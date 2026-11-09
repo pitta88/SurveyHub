@@ -1,13 +1,30 @@
+using SurveyHub.Application.Common;
+using SurveyHub.Api.Endpoints;
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// 서비스 등록 (Build 전)
-builder.Services.AddProblemDetails();       // Required by UseExceptionHandler to write RFC 9457 error responses
-builder.Services.AddHealthChecks();        
+builder.Services.AddOptions<PaginationOptions>()
+    .Bind(builder.Configuration.GetSection(PaginationOptions.SectionName))
+    .ValidateDataAnnotations()
+    .Validate(o => o.DefaultPageSize <= o.MaxPageSize, "DefaultPageSize must be less than or equal to MaxPageSize.")
+    .ValidateOnStart(); // Validate options on application startup
+
+builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks();
+builder.Services.AddOpenApi(); 
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+
 app.UseExceptionHandler();          // Outermost middleware: turns unhandled exceptions into 500 ProblemDetails
 
+app.MapInstitutionEndpoints();   
 app.MapHealthChecks("/health");
 
 app.Run();
