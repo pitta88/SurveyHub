@@ -1,0 +1,16 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64    #apple silicon no warning
+    container_name: surveyhub-sql
+    environment:
+      SA_PASSWORD: "${SA_PASSWORD}" # from .env file
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - surveyhub-sqldata:/var/opt/mssql
+
+volumes:
+  surveyhub-sqldata:
+    external: true
