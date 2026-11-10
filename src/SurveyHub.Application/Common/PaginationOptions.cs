@@ -12,5 +12,5 @@ public sealed class PaginationOptions
     [Range(1, 500)]
     public int MaxPageSize { get; set; } = 100;
 
-    
+
 }

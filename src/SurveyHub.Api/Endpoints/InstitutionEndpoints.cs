@@ -4,13 +4,14 @@ using SurveyHub.Application.Common;
 using SurveyHub.Application.Institutions;
 
 namespace SurveyHub.Api.Endpoints;
+
 public static class InstitutionEndpoints
 {
     public static IEndpointRouteBuilder MapInstitutionEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/institutions")
             .WithTags("Institutions");
-        
+
         group.MapGet("/", GetAll)
             .ProducesProblem(StatusCodes.Status400BadRequest);
         group.MapGet("/{id:int}", GetById);
@@ -20,26 +21,26 @@ public static class InstitutionEndpoints
 
     private static readonly string[] States = ["MD", "VA", "DC", "PA", "DE"];
 
-    private static readonly IReadOnlyDictionary<int, InstitutionDto> Institutions = 
+    private static readonly IReadOnlyDictionary<int, InstitutionDto> Institutions =
         Enumerable.Range(1, 30).ToDictionary(
-            i => i, 
-            i => new InstitutionDto( 
+            i => i,
+            i => new InstitutionDto(
                 Id: i,
                 UnitId: $"{100000 + i}",
                 Name: $"Institution {i}",
                 State: States[i % States.Length]
                 )
             );
-        
-    private static Results<Ok<PagedResult<InstitutionDto>>, ProblemHttpResult> GetAll(IOptions<PaginationOptions> options, 
+
+    private static Results<Ok<PagedResult<InstitutionDto>>, ProblemHttpResult> GetAll(IOptions<PaginationOptions> options,
         int? page, int? pageSize)
     {
         var opt = options.Value;
         var (pageRequest, error) = PageRequest.Create(page, pageSize, opt);
 
-        if ( pageRequest is null )
+        if (pageRequest is null)
         {
-            return TypedResults.Problem(error,  statusCode: StatusCodes.Status400BadRequest);
+            return TypedResults.Problem(error, statusCode: StatusCodes.Status400BadRequest);
         }
 
         var items = Institutions.Values

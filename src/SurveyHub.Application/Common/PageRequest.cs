@@ -18,6 +18,6 @@ public sealed record PageRequest(int Page, int PageSize)
             return (null, "PageSize must be a positive integer.");
         }
 
-        return (new PageRequest(p, Math.Min(size, options.MaxPageSize)), null);    
+        return (new PageRequest(p, Math.Min(size, options.MaxPageSize)), null);
     }
 }

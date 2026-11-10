@@ -1,6 +1,7 @@
 using SurveyHub.Application.Common;
 using SurveyHub.Api.Endpoints;
 using Scalar.AspNetCore;
+using SurveyHub.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,12 @@ builder.Services.AddOptions<PaginationOptions>()
 
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
-builder.Services.AddOpenApi(); 
+builder.Services.AddOpenApi();
+
+var connectionString = builder.Configuration.GetConnectionString("SurveyHub")
+    ?? throw new InvalidOperationException("Connection string 'SurveyHub' is missing.");
+
+builder.Services.AddInfrastructure(connectionString);
 
 var app = builder.Build();
 
@@ -24,7 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();          // Outermost middleware: turns unhandled exceptions into 500 ProblemDetails
 
-app.MapInstitutionEndpoints();   
+app.MapInstitutionEndpoints();
 app.MapHealthChecks("/health");
 
 app.Run();
