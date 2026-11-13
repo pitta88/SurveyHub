@@ -6,14 +6,14 @@ namespace SurveyHub.Infrastructure.Persistence.Configurations;
 
 internal sealed class SurveyConfiguration : IEntityTypeConfiguration<Survey>
 {
-    public void Configure(EntityTypeBuilder<Survey> builder) 
+    public void Configure(EntityTypeBuilder<Survey> builder)
     {
         builder.ToTable("Surveys");
 
         builder.HasKey(s => s.Id);
-        
-        builder.HasIndex(s=>s.Code).IsUnique();
-        builder.Property(s=>s.Code).HasMaxLength(Survey.CodeMaxLength);
-        builder.Property(s=>s.Title).HasMaxLength(Survey.TitleMaxLength);
+
+        builder.HasIndex(s => s.Code).IsUnique();
+        builder.Property(s => s.Code).HasMaxLength(Survey.CodeMaxLength);
+        builder.Property(s => s.Title).HasMaxLength(Survey.TitleMaxLength);
     }
 }

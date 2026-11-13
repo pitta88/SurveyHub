@@ -14,7 +14,7 @@ public static class InstitutionEndpoints
 
         group.MapGet("/", GetAll)
             .ProducesProblem(StatusCodes.Status400BadRequest);
-        group.MapGet("/{id:int}", GetById);
+        group.MapGet("/{unitId:int}", GetById);
 
         return app;
     }
@@ -30,15 +30,15 @@ public static class InstitutionEndpoints
             return TypedResults.Problem(error, statusCode: StatusCodes.Status400BadRequest);
         }
 
-        var items = await institutionQueries.GetPageAsync(pageRequest, ct);
+        var result = await institutionQueries.GetPageAsync(pageRequest, ct);
 
-        return TypedResults.Ok(new PagedResult<InstitutionDto>(items.Items, pageRequest.Page, pageRequest.PageSize, items.TotalCount));
+        return TypedResults.Ok(result);
     }
 
-    private static async Task<Results<Ok<InstitutionDto>, NotFound>> GetById(int id, IInstitutionQueries institutionQueries, CancellationToken ct)
+    private static async Task<Results<Ok<InstitutionDto>, NotFound>> GetById(int unitId, IInstitutionQueries institutionQueries, CancellationToken ct)
     {
 
-        var institution = await institutionQueries.GetByUnitIdAsync(id, ct);
+        var institution = await institutionQueries.GetByUnitIdAsync(unitId, ct);
         if (institution is not null)
         {
             return TypedResults.Ok(institution);

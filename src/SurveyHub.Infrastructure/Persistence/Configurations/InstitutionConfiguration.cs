@@ -11,10 +11,10 @@ internal sealed class InstitutionConfiguration : IEntityTypeConfiguration<Instit
     {
         builder.ToTable("Institutions");
 
-        builder.HasKey(i=> i.UnitId);
+        builder.HasKey(i => i.UnitId);
         builder.Property(i => i.UnitId).ValueGeneratedNever();
 
-        builder.Property(i=> i.Name).HasMaxLength(Institution.NameMaxLength);
-        builder.Property(i=>i.State).HasMaxLength(2).IsFixedLength();
+        builder.Property(i => i.Name).HasMaxLength(Institution.NameMaxLength);
+        builder.Property(i => i.State).HasMaxLength(2).IsFixedLength();
     }
 }
