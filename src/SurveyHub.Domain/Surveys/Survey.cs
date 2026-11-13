@@ -2,6 +2,8 @@ namespace SurveyHub.Domain.Surveys;
 
 public sealed class Survey
 {
+    public const int TitleMaxLength = 200;
+    public const int CodeMaxLength = 20;
     public int Id { get; private set; }
     public string Code { get; private set; }
     public string Title { get; private set; }

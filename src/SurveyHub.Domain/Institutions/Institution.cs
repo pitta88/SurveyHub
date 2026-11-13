@@ -2,14 +2,15 @@ namespace SurveyHub.Domain.Institutions;
 
 public sealed class Institution
 {
-    public const int NameMaxLength = 200;
+    public const int NameMaxLength = 500;
+    public const int UnitIdMin = 100000;
+    public const int UnitIdMax = 999999;
 
-    public int Id { get; private set; } // filled by DB - Identity
-    public string UnitId { get; private set; }
+    public int UnitId { get; private set; }  // Key
     public string Name { get; private set; }
     public string State { get; private set; }
 
-    public Institution(string unitId, string name, string state)
+    public Institution(int unitId, string name, string state)
     {
         UnitId = ValidateUnitId(unitId);
         Name = ValidateName(name, nameof(name));
@@ -21,13 +22,11 @@ public sealed class Institution
         Name = ValidateName(newName, nameof(newName));
     }
 
-    private static string ValidateUnitId(string unitId)
+    private static int ValidateUnitId(int unitId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(unitId);
-
-        if (unitId.Length != 6 || !unitId.All(char.IsAsciiDigit))
+        if (unitId < UnitIdMin || unitId > UnitIdMax)
         {
-            throw new ArgumentException("UnitId must be exactly 6 digits.", nameof(unitId));
+            throw new ArgumentOutOfRangeException(nameof(unitId), unitId, "UnitId must be exactly 6-digit number.");
         }
         return unitId;
     }

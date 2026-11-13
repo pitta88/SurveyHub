@@ -18,7 +18,7 @@ builder.Services.AddOpenApi();
 var connectionString = builder.Configuration.GetConnectionString("SurveyHub")
     ?? throw new InvalidOperationException("Connection string 'SurveyHub' is missing.");
 
-builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddInfrastructure(connectionString, seedSampleData: builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 
