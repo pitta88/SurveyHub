@@ -19,21 +19,8 @@ public static class InstitutionEndpoints
         return app;
     }
 
-    private static readonly string[] States = ["MD", "VA", "DC", "PA", "DE"];
-
-    private static readonly IReadOnlyDictionary<int, InstitutionDto> Institutions =
-        Enumerable.Range(1, 30).ToDictionary(
-            i => i,
-            i => new InstitutionDto(
-                Id: i,
-                UnitId: $"{100000 + i}",
-                Name: $"Institution {i}",
-                State: States[i % States.Length]
-                )
-            );
-
-    private static Results<Ok<PagedResult<InstitutionDto>>, ProblemHttpResult> GetAll(IOptions<PaginationOptions> options,
-        int? page, int? pageSize)
+    private static async Task<Results<Ok<PagedResult<InstitutionDto>>, ProblemHttpResult>> GetAll(IOptions<PaginationOptions> options,
+        int? page, int? pageSize, IInstitutionQueries institutionQueries, CancellationToken ct)
     {
         var opt = options.Value;
         var (pageRequest, error) = PageRequest.Create(page, pageSize, opt);
@@ -43,17 +30,16 @@ public static class InstitutionEndpoints
             return TypedResults.Problem(error, statusCode: StatusCodes.Status400BadRequest);
         }
 
-        var items = Institutions.Values
-            .OrderBy(i => i.Id)
-            .Skip(pageRequest.Skip).Take(pageRequest.PageSize)
-            .ToList();
+        var items = await institutionQueries.GetPageAsync(pageRequest, ct);
 
-        return TypedResults.Ok(new PagedResult<InstitutionDto>(items, pageRequest.Page, pageRequest.PageSize, Institutions.Count));
+        return TypedResults.Ok(new PagedResult<InstitutionDto>(items.Items, pageRequest.Page, pageRequest.PageSize, items.TotalCount));
     }
 
-    private static Results<Ok<InstitutionDto>, NotFound> GetById(int id)
+    private static async Task<Results<Ok<InstitutionDto>, NotFound>> GetById(int id, IInstitutionQueries institutionQueries, CancellationToken ct)
     {
-        if (Institutions.TryGetValue(id, out var institution))
+
+        var institution = await institutionQueries.GetByUnitIdAsync(id, ct);
+        if (institution is not null)
         {
             return TypedResults.Ok(institution);
         }

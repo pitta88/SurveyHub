@@ -1,8 +1,11 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
+using SurveyHub.Application.Institutions;
 using SurveyHub.Domain.Institutions;
 using SurveyHub.Infrastructure.Persistence;
+using SurveyHub.Infrastructure.Queries;
 
 namespace SurveyHub.Infrastructure;
 
@@ -30,6 +33,11 @@ public static class DependencyInjection
                 });      
             }
         });
+
+        services.AddSingleton(new SqlConnectionFactory(connectionString));
+        services.AddScoped<IInstitutionQueries, InstitutionQueries>();
+
+
 
         return services;
     }
