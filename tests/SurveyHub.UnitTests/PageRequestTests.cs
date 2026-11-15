@@ -14,14 +14,13 @@ public class PageRequestTests
     public void PageRequest_Should_Have_Default_Values(int? page, int? pageSize, int expectedPage, int expectedPageSize, int expectedSkipped)
     {
         // Arrange
-        var (pageRequest, error) = PageRequest.Create(page, pageSize, Options);
+        var pageRequest = PageRequest.Create(page, pageSize, Options);
 
         // Assert
-        Assert.Null(error);
-        Assert.NotNull(pageRequest);
-        Assert.Equal(expectedPage, pageRequest.Page);
-        Assert.Equal(expectedPageSize, pageRequest.PageSize);
-        Assert.Equal(expectedSkipped, pageRequest.Skip);
+        Assert.True(pageRequest.IsSuccess);
+        Assert.Equal(expectedPage, pageRequest.Value.Page);
+        Assert.Equal(expectedPageSize, pageRequest.Value.PageSize);
+        Assert.Equal(expectedSkipped, pageRequest.Value.Skip);
     }
 
     [Theory]
@@ -29,22 +28,23 @@ public class PageRequestTests
     [InlineData(-1)]
     public void Create_Should_Return_Error_When_Page_Is_Less_Than_One(int page)
     {
-        var (request, error) = PageRequest.Create(page, 10, Options);
+        var request = PageRequest.Create(page, 10, Options);
 
-        Assert.Null(request);
-        Assert.Equal("Page must be a positive integer.", error);
+        Assert.False(request.IsSuccess);
+        Assert.Equal("Page must be a positive integer.", request.Error.Description);
     }
 
     [Theory]
-    [InlineData(0, 10)]
-    [InlineData(-1, 10)]
-    [InlineData(1, 0)]
-    [InlineData(1, -1)]
-    public void Create_Should_Return_Error_When_PageSize_Is_Less_Than_One(int page, int pageSize)
+    [InlineData(0, 10, "Paging.InvalidPage")]
+    [InlineData(-1, 10, "Paging.InvalidPage")]
+    [InlineData(1, 0, "Paging.InvalidPageSize")]
+    [InlineData(1, -1, "Paging.InvalidPageSize")]
+    public void Create_Rejects_Values_Below_One(int page, int pageSize, string expectedCode)
     {
-        var (request, error) = PageRequest.Create(page, pageSize, Options);
+        var request = PageRequest.Create(page, pageSize, Options);
 
-        Assert.Null(request);
-        Assert.NotNull(error);
+        Assert.True(request.IsFailure);
+        Assert.Equal(ErrorType.Validation, request.Error.Type);
+        Assert.Equal(expectedCode, request.Error.Code);
     }
 }

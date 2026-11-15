@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
+using SurveyHub.Api.Extensions;
 using SurveyHub.Application.Common;
 using SurveyHub.Application.Institutions;
 
@@ -23,14 +24,14 @@ public static class InstitutionEndpoints
         int? page, int? pageSize, IInstitutionQueries institutionQueries, CancellationToken ct)
     {
         var opt = options.Value;
-        var (pageRequest, error) = PageRequest.Create(page, pageSize, opt);
+        var pageRequest = PageRequest.Create(page, pageSize, opt);
 
-        if (pageRequest is null)
+        if (pageRequest.IsFailure)
         {
-            return TypedResults.Problem(error, statusCode: StatusCodes.Status400BadRequest);
+            return pageRequest.Error.ToProblem();
         }
 
-        var result = await institutionQueries.GetPageAsync(pageRequest, ct);
+        var result = await institutionQueries.GetPageAsync(pageRequest.Value, ct);
 
         return TypedResults.Ok(result);
     }
