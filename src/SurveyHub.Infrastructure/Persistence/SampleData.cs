@@ -13,7 +13,7 @@ internal static class SampleData
         if (institutions.Any()) return;
 
         string[] states = ["MD", "VA", "DC", "PA", "DE"];
-        institutions.AddRange(Enumerable.Range(1, 30).Select(i => new Institution(Institution.UnitIdMin + i, $"Institution {i}", states[(i - 1) % states.Length])));
+        institutions.AddRange(Enumerable.Range(1, 30).Select(i => new Institution(UnitIdCheckDigit.Append(Institution.UnitIdMin / 10 + i), $"Institution {i}", states[(i - 1) % states.Length])));
 
         context.SaveChanges();
     }

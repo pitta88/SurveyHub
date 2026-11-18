@@ -22,6 +22,11 @@ namespace SurveyHub.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("UnitIdBaseSequence", "dbo")
+                .StartsAt(60000L)
+                .HasMin(60000L)
+                .HasMax(99999L);
+
             modelBuilder.Entity("SurveyHub.Domain.Institutions.Institution", b =>
                 {
                     b.Property<int>("UnitId")

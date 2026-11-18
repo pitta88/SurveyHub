@@ -6,6 +6,9 @@ public sealed class Institution
     public const int UnitIdMin = 100000;
     public const int UnitIdMax = 999999;
 
+    public const int UnitIdBaseMin = 60000;
+    public const int UnitIdBaseMax = 99999;
+
     public int UnitId { get; private set; }  // Key
     public string Name { get; private set; }
     public string State { get; private set; }
@@ -28,6 +31,10 @@ public sealed class Institution
         {
             throw new ArgumentOutOfRangeException(nameof(unitId), unitId, "UnitId must be exactly 6-digit number.");
         }
+
+        if (!UnitIdCheckDigit.IsValid(unitId))
+            throw new ArgumentException("UnitId has an invalid check digit.", nameof(unitId));
+            
         return unitId;
     }
 

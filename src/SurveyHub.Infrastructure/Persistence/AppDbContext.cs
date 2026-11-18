@@ -12,5 +12,11 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        modelBuilder.HasSequence<int>("UnitIdBaseSequence", "dbo")
+            .StartsAt(60000)
+            .IncrementsBy(1)
+            .HasMin(Institution.UnitIdBaseMin)
+            .HasMax(Institution.UnitIdBaseMax);
     }
 }
