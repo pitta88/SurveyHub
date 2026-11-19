@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using SurveyHub.Domain.Institutions;
 
 namespace SurveyHub.UnitTests;
@@ -6,8 +5,8 @@ namespace SurveyHub.UnitTests;
 public class UnitIdCheckDigitTests
 {
     [Theory]
-    [InlineData (10065, 100654)]
-    [InlineData (10066, 100663)]
+    [InlineData(10065, 100654)]
+    [InlineData(10066, 100663)]
     public void Matches_real_ipeds_unit_ids(int baseNumber, int expctedUnitId)
     {
         Assert.Equal(expctedUnitId, UnitIdCheckDigit.Append(baseNumber));
@@ -37,5 +36,5 @@ public class UnitIdCheckDigitTests
         // 16000과 61000은 같은 체크 디지트 → 자리 바꿈을 못 잡는 경우
         Assert.Equal(UnitIdCheckDigit.Append(16000) % 10, UnitIdCheckDigit.Append(61000) % 10);
     }
-    
+
 }

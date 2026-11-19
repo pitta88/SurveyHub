@@ -23,8 +23,8 @@ public static class DependencyInjection
 
         services.AddSingleton(new SqlConnectionFactory(connectionString));
         services.AddScoped<IInstitutionQueries, InstitutionQueries>();
-
-
+        services.AddScoped<IUnitIdGenerator, UnitIdGenerator>();
+        services.AddScoped<IInstitutionRepository, InstitutionRepository>();
 
         return services;
     }

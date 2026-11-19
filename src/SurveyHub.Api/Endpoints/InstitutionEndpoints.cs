@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using SurveyHub.Api.Extensions;
+using SurveyHub.Api.Filters;
 using SurveyHub.Application.Common;
 using SurveyHub.Application.Institutions;
 
@@ -15,7 +16,13 @@ public static class InstitutionEndpoints
 
         group.MapGet("/", GetAll)
             .ProducesProblem(StatusCodes.Status400BadRequest);
-        group.MapGet("/{unitId:int}", GetById);
+
+        group.MapGet("/{unitId:int}", GetById)
+            .WithName("GetInstitution");
+
+        group.MapPost("/", Create)
+            .AddEndpointFilter<ValidationFilter<CreateInstitutionRequest>>()
+            .ProducesValidationProblem();
 
         return app;
     }
@@ -46,5 +53,16 @@ public static class InstitutionEndpoints
         }
 
         return TypedResults.NotFound();
+    }
+
+    private static async Task<Results<CreatedAtRoute<InstitutionDto>, ProblemHttpResult>> Create(CreateInstitutionRequest request, CreateInstitutionHandler handler, CancellationToken ct)
+    {
+        var result = await handler.HandleAsync(request, ct);
+        if (result.IsFailure)
+        {
+            return result.Error.ToProblem();
+        }
+
+        return TypedResults.CreatedAtRoute(result.Value, "GetInstitution", new { unitid = result.Value.UnitId });
     }
 }

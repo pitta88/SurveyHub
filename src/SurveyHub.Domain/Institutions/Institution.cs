@@ -34,7 +34,7 @@ public sealed class Institution
 
         if (!UnitIdCheckDigit.IsValid(unitId))
             throw new ArgumentException("UnitId has an invalid check digit.", nameof(unitId));
-            
+
         return unitId;
     }
 
