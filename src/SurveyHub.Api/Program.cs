@@ -3,6 +3,7 @@ using SurveyHub.Api.Endpoints;
 using Scalar.AspNetCore;
 using SurveyHub.Infrastructure;
 using SurveyHub.Application;
+using SurveyHub.Api.Errors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddOptions<PaginationOptions>()
     .ValidateOnStart(); // Validate options on application startup
 
 builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<RequestCanceledExceptionHandler>();
+builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHealthChecks();
 builder.Services.AddOpenApi();
 
