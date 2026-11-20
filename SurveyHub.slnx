@@ -6,6 +6,7 @@
     <Project Path="src/SurveyHub.Infrastructure/SurveyHub.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/SurveyHub.IntegrationTests/SurveyHub.IntegrationTests.csproj" />
     <Project Path="tests/SurveyHub.UnitTests/SurveyHub.UnitTests.csproj" />
   </Folder>
 </Solution>
